@@ -37,6 +37,10 @@ public class Score implements Serializable{
         score = aScore;
         name = aName;
     }
+    
+    public Score() {
+    	
+    }
 
     public void add(Score s){
         scores.add(s);

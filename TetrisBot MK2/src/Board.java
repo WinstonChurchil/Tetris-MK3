@@ -10,9 +10,12 @@ import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.AbstractButton;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.Timer;
@@ -76,25 +79,154 @@ public class Board extends JComponent implements Serializable {
 
     public static void main(String[] args) {
         // TODO Auto-generated method stub
-        JFrame frame = new JFrame();
+    	JFrame startFrame = new JFrame("Menu");
+		JPanel buttonPanel = new JPanel(new GridLayout(2,2,4,4));
+		JButton gameButton = new JButton("Start Game");
+		Font myFont = new Font("Lucida Bright", Font.PLAIN,30);
+        gameButton.setFont(myFont);
+		gameButton.setBackground(Color.GREEN);
+		gameButton.setForeground(Color.BLACK);
+		gameButton.setPreferredSize(new Dimension(300, 70));
+		JButton scoreButton = new JButton("View Highscores");
+		Font my2Font = new Font("Lucida Bright", Font.PLAIN,30);
+        scoreButton.setFont(my2Font);
+		scoreButton.setBackground(Color.CYAN);
+		scoreButton.setForeground(Color.BLACK);
+		scoreButton.setPreferredSize(new Dimension(300, 70));
+		JButton optimalButton = new JButton("Optimal Solution");
+		Font my3Font = new Font("Lucida Bright", Font.PLAIN,30);
+        optimalButton.setFont(my3Font);
+		optimalButton.setBackground(Color.DARK_GRAY);
+		optimalButton.setForeground(Color.WHITE);
+		optimalButton.setPreferredSize(new Dimension(300, 70));
+		JButton botButton = new JButton("Bot Play");
+		Font my4Font = new Font("Lucida Bright", Font.PLAIN,30);
+        botButton.setFont(my4Font);
+		botButton.setBackground(Color.ORANGE);
+		botButton.setForeground(Color.BLACK);
+		botButton.setPreferredSize(new Dimension(300, 70));
+		
+		/*
+		 * Button to start the game from the menu
+		 */
+		class GameStarter implements ActionListener {
+			public void actionPerformed(ActionEvent e){
+				JFrame frame = new JFrame();
 
-        frame.setTitle("Tetris");
-        frame.setSize(500, 800);
-        frame.setResizable(true);
-        frame.setBackground(Color.white);
-        //frame.setLocationRelativeTo(null);
+		        frame.setTitle("Tetris");
+		        frame.setSize(500, 800);
+		        frame.setResizable(true);
+		        frame.setBackground(Color.white);
+		        //frame.setLocationRelativeTo(null);
 
 
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 
-        Board Tetris = new Board(15, 5);
-        frame.add(Tetris);
+		        Board Tetris = new Board(15, 5);
+		        frame.add(Tetris);
 
 
-        frame.setVisible(true);
+		        frame.setVisible(true);
 
-        Tetris.NewPiece();
+		        Tetris.NewPiece();
+			}
+		}
+		
+		/*
+		 * Button to acces the HighScores.
+		 */
+		class ScoreViewer implements ActionListener {
+			private JLabel score1;
+			private JLabel score2;
+			private JLabel score3;
+			private JLabel score4;
+			private JLabel score5;
+			
+			public void actionPerformed(ActionEvent e){
+				JFrame frame = new JFrame("Highscores");
+				JPanel scorePanel = new JPanel();
+				scorePanel.setLayout(new BoxLayout(scorePanel, BoxLayout.Y_AXIS));
+				Score test = new Score();
+				test.read();
+				ArrayList<Score> scoreList = test.getScores();
+				if (scoreList.size() > 0) {
+					score1 = new JLabel(scoreList.get(0).getName() + " " + scoreList.get(0).getScore());
+					scorePanel.add(score1);
+					if (scoreList.size() > 1) {
+						score2 = new JLabel("\n" + scoreList.get(1).getName() + " " + scoreList.get(1).getScore());
+						scorePanel.add(score2);
+						if (scoreList.size() > 2) {
+							score3 = new JLabel(scoreList.get(2).getName() + " " + scoreList.get(2).getScore());
+							scorePanel.add(score3);
+							if (scoreList.size() > 3) {
+								score4 = new JLabel(scoreList.get(3).getName() + " " + scoreList.get(3).getScore());
+								scorePanel.add(score4);
+								if (scoreList.size() > 4) {
+									score5 = new JLabel(scoreList.get(4).getName() + " " + scoreList.get(4).getScore());
+									scorePanel.add(score5);
+								}
+							}
+						}
+					}
+				}				
+			frame.add(scorePanel);
+			frame.pack();
+			frame.setLocationRelativeTo(null);
+			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.setResizable(false);
+			frame.setVisible(true);			
+			}
+		}
+		
+		/*
+		 * Button to get the optimal solution
+		 */
+		class OptimalSolutionGetter implements ActionListener {
+			public void actionPerformed(ActionEvent e){
+				JFrame frame = new JFrame();
+		        frame.setTitle("Tetris");
+		        frame.setSize(300, 700);
+		        frame.setResizable(true);
+		        frame.setLocationRelativeTo(null);
+		        frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		        OptimalBoard Tetris = new OptimalBoard(15, 5);
+		        frame.add(Tetris);
+		        Tetris.SetStartPieces();
+
+
+
+		       frame.setVisible(true);
+			}
+		}
+		
+		/*
+		 * Button to let the bot play. (Not in there yet)
+		 */
+		class BotDisplayer implements ActionListener {
+			public void actionPerformed(ActionEvent e){
+				//This is where the bot should play.
+			}
+		}
+    	GameStarter start = new GameStarter();
+    	ScoreViewer view = new ScoreViewer();
+    	OptimalSolutionGetter osg = new OptimalSolutionGetter();
+    	BotDisplayer beep = new BotDisplayer();
+    	gameButton.addActionListener(start);
+    	scoreButton.addActionListener(view);
+    	optimalButton.addActionListener(osg);
+    	botButton.addActionListener(beep);
+    	buttonPanel.add(gameButton);
+    	buttonPanel.add(scoreButton);
+    	buttonPanel.add(optimalButton);
+    	buttonPanel.add(botButton);
+    	startFrame.add(buttonPanel);
+    	startFrame.pack();
+    	startFrame.setLocationRelativeTo(null);
+    	startFrame.setResizable(false);
+    	startFrame.setVisible(true);
+    	startFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	
 
 
     }
@@ -1163,39 +1295,79 @@ public class Board extends JComponent implements Serializable {
             repaint();
         }
     }
-
+    
+    /*
+     * Method that makes a screen pop up once the game finishes and asks for your 
+     * name to add the scores to the list of highscores.
+     */
     public void gameOver() {
-        timer.stop();
+    	timer.stop();
         GameOver = true;
-        gameOverFrame = new JFrame("Game Over!");
+        gameOverFrame = new JFrame(" Game Over !"); 
+        JLabel gameOverLabel = new JLabel("Game is Over :  You got " + Score + " Points !");
+        gameOverLabel.setFont(new Font("Lucida Bright" , Font.PLAIN, 34));
         gameOverFrame.setLocationRelativeTo(null);
         gameOverFrame.setResizable(false);
-        JPanel gameOverPanel = new JPanel(new FlowLayout());
-        nameGetter = new JTextField(12);
+        gameOverFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        JPanel gameOverPanel = new JPanel(new BorderLayout());
+        nameGetter = new JTextField(5);
+        Font font = new Font("Lucida Bright" , Font.PLAIN, 34);
+        nameGetter.setFont(font);
         JButton gameOverButton = new JButton("Submit");
+        gameOverButton.setPreferredSize(new Dimension(200, 50));
+        JButton restartButton = new JButton("Restart game");
+        restartButton.setPreferredSize(new Dimension(200, 50));
         GameOverListener listener = new GameOverListener();
+        GameRestarter restart = new GameRestarter();
         gameOverButton.addActionListener(listener);
-        gameOverPanel.add(nameGetter);
-        gameOverPanel.add(gameOverButton);
+        restartButton.addActionListener(restart);
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+        buttonPanel.add(gameOverButton);
+        buttonPanel.add(restartButton);
+        JPanel namePanel = new JPanel(new FlowLayout());
+        JLabel nameLabel = new JLabel("Name ");
+        nameLabel.setFont(new Font("Lucida Bright" , Font.PLAIN, 34));
+        namePanel.add(nameLabel);
+        namePanel.add(nameGetter);
+        gameOverPanel.add(gameOverLabel,BorderLayout.NORTH);
+        gameOverPanel.add(namePanel, BorderLayout.CENTER);
+        gameOverPanel.add(buttonPanel, BorderLayout.SOUTH);
         gameOverFrame.add(gameOverPanel);
         gameOverFrame.pack();
         gameOverFrame.setVisible(true);
         repaint();
     }
+    
+    /*
+     * Button to submit the score
+     */
     class GameOverListener implements ActionListener{
-        public void actionPerformed(ActionEvent e){
-            String name = nameGetter.getText();
-            Score newScore = new Score(Score, name);
+    	public void actionPerformed(ActionEvent e){
+    		String name = nameGetter.getText();
+    		Score newScore = new Score(Score, name);
             newScore.read();
             newScore.add(newScore);
             newScore.sortList();
             newScore.write();
             myScores = newScore.getScores();
             for (int i = 0; i < myScores.size(); i++) {
-                System.out.println(myScores.get(i).toString());
+            	System.out.println(myScores.get(i).toString());
             }
-            gameOverFrame.dispose();
-        }
+            ((AbstractButton) e.getSource()).setEnabled(false);
+            ((AbstractButton) e.getSource()).removeActionListener(this);
+            
+    	}
+    }
+    
+    /*
+     * Button to restart the game.
+     */
+    class GameRestarter implements ActionListener {
+    	public void actionPerformed(ActionEvent e) {
+    		clearBoard();
+    		gameOverFrame.dispose();
+    		
+    	}
     }
 
     /**
@@ -1220,5 +1392,25 @@ public class Board extends JComponent implements Serializable {
         int averageHeight = 15 - (heightSum / 5);
         //System.out.println(averageHeight);
     }
-
+    
+    public boolean isGameOver() {
+    	return GameOver;
+    }
+    
+    /*
+     * Method to clear the board, once you restart the game.
+     */
+    private void clearBoard()	{
+    	for(int i = 0; i < Board.length; i++)	{
+    		for(int j = 0; j < Board[0].length; j++)	{
+        		Board[i][j] = 0;
+        		SetPieces[i][j] = false;
+        	}
+    	}
+    	GameOver = false;
+    	repaint();
+    	NewPiece();
+    	timer.start();
+    	Score = 0;
+    }
 }
